@@ -14,7 +14,7 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/sxplayer.cpp)
+        src/main/cpp/player/sxplayer.cpp)
 
 #添加libavcodec-57.so
 add_library( avcodec-57
