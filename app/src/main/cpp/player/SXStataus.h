@@ -1,0 +1,14 @@
+//
+// Created by ywl on 2017-12-17.
+//
+
+#ifndef SXPLAYER_WLSTATAUS_H
+#define SXPLAYER_WLSTATAUS_H
+
+#endif //SXPLAYER_WLSTATAUS_H
+
+#define SX_THREAD_MAIN 1
+#define SX_THREAD_CHILD 2
+
+#define SX_FFMPEG_CAN_NOT_OPEN_URL 3
+#define SX_FFMPEG_CAN_NOT_FIND_STREAMS 4
