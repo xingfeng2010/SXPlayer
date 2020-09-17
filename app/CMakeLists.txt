@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-include_directories(src/main/cpp/thirdparty/ffmpeg/include)
+include_directories(src/main/cpp/include)
 
 add_library( # Sets the name of the library.
         sxplayer
@@ -17,6 +17,8 @@ add_library( # Sets the name of the library.
         src/main/cpp/player/sxplayer.cpp
         src/main/cpp/player/SXPlayStatus.cpp
         src/main/cpp/player/SXJavaCall.cpp
+        src/main/cpp/player/SXAudioChannel.cpp
+        src/main/cpp/player/SXQueue.cpp
         )
 
 #添加libavcodec-57.so
