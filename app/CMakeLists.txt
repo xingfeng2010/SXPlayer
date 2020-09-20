@@ -19,6 +19,10 @@ add_library( # Sets the name of the library.
         src/main/cpp/player/SXJavaCall.cpp
         src/main/cpp/player/SXAudioChannel.cpp
         src/main/cpp/player/SXQueue.cpp
+        src/main/cpp/player/SXAudio.cpp
+        src/main/cpp/player/SXBasePlayer.cpp
+        src/main/cpp/player/SXVideo.cpp
+        src/main/cpp/player/SXFFmpeg.cpp
         )
 
 #添加libavcodec-57.so
