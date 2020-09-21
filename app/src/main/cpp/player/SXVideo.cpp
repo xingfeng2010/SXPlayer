@@ -4,10 +4,10 @@
 
 #include "SXVideo.h"
 
-SXVideo::SXVideo(SXJavaCall *javaCall1, SXAudio *audio, SXPlayStatus *playStatus) {
+SXVideo::SXVideo(SXJavaCall *javaCall, SXAudio *audio, SXPlayStatus *playStatus) {
     streamIndex = -1;
     clock = 0;
-    sxJavaCall1 = javaCall1;
+    sxJavaCall = javaCall;
     sxAudio = audio;
     queue = new SXQueue(playStatus);
     sxPlayStatus = playStatus;
@@ -87,7 +87,7 @@ void *decodeVideoT(void *data)
 void SXVideo::decodVideo() {
     while (!sxPlayStatus->exit){
         isExit = false;
-        if (Ç->pause) {
+        if (sxPlayStatus->pause) {
             continue;
         }
 
@@ -124,7 +124,7 @@ void SXVideo::decodVideo() {
             if(LOG_SHOW)
             {
                 LOGE("video clock is %f", time);
-                LOGE("audio clock is %f", wlAudio->clock);
+                LOGE("audio clock is %f", sxAudio->clock);
             }
 
             if (time < 0) {
@@ -199,7 +199,7 @@ void SXVideo::decodVideo() {
             if (LOG_SHOW) {
                 LOGE("delay time %f diff is %f", delayTime, diff);
             }
-            if (diff > = 0.8) {
+            if (diff >= 0.8) {
                 av_frame_free(&frame);
                 av_free(frame);
                 frame = NULL;

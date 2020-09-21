@@ -23,7 +23,7 @@ class SXFFmpeg {
 public:
     const char *urlpath = NULL;
     SXJavaCall *sxJavaCall = NULL;
-    pthread_t  decodThread;
+    pthread_t decodThread;
     AVFormatContext *pFormatCtx = NULL;
     int duration = 0;
     SXAudio *sxAudio = NULL;

@@ -4,7 +4,7 @@
 
 #include "SXFFmpeg.h"
 
-void *decodThread(void *data) {
+void *decodData(void *data) {
     SXFFmpeg *sxfFmpeg = (SXFFmpeg *) data;
     sxfFmpeg->decodeFFmpeg();
     pthread_exit(&sxfFmpeg->decodThread);
@@ -92,7 +92,7 @@ void SXFFmpeg::release() {
             LOGE("释放audio....................................2");
         }
 
-        sxAudio->realease();
+        sxAudio->release();
         delete (sxAudio);
         sxAudio = NULL;
     }
@@ -197,7 +197,8 @@ int SXFFmpeg::getAVCodecContext(AVCodecParameters *parameters, SXBasePlayer *bas
 }
 
 int SXFFmpeg::preparedFFmpeg() {
-    pthread_create(&decodThread, NULL, decodThread, this);
+    pthread_create(&decodThread, NULL, decodData, this);
+    return 0;
 }
 
 int SXFFmpeg::getDuration() {
@@ -220,7 +221,7 @@ int SXFFmpeg::start() {
         }
     }
 
-    AVBitStreamFilterContext * mimeType = NULL;
+    AVBitStreamFilterContext* mimType = NULL;
     if (mimeType == 1) {
         mimType = av_bitstream_filter_init("h264_mp4toannexb");
     } else if (mimeType == 2) {
@@ -267,11 +268,11 @@ int SXFFmpeg::start() {
                     LOGE("解码第 %d 帧", count);
                 }
                 sxAudio->queue->putAVPacket(packet);
-            } else if (sxVideo != NULL && packet->stream_index = sxVideo->streamIndex) {
-                if (mimeType != NULL && !isavi) {
+            } else if (sxVideo != NULL && packet->stream_index == sxVideo->streamIndex) {
+                if (mimType != NULL && !isavi) {
                     uint8_t * data;
-                    av_bitstream_filter_filter(mimeType,
-                                               pFormatCtx->streams[sxVideo->streamIndex]->codecpar,
+                    av_bitstream_filter_filter(mimType,
+                                               pFormatCtx->streams[sxVideo->streamIndex]->codec,
                                                NULL, &data, &packet->size, packet->data,
                                                packet->size, 0);
                     uint8_t * tdata = NULL;
@@ -299,7 +300,7 @@ int SXFFmpeg::start() {
             }
         }
     }
-    if (mimeType != NULL) {
+    if (mimType != NULL) {
         av_bitstream_filter_close(mimType);
     }
 
@@ -372,14 +373,14 @@ int SXFFmpeg::decodeFFmpeg() {
         LOGD("channel numbers is %d", pFormatCtx->nb_streams);
     }
     for (int i = 0; i < pFormatCtx->nb_streams; i++) {
-        if (pFormatCtx->streams[i]->codecpar->codec_type = AVMEDIA_TYPE_AUDIO) {
+        if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) {
             if (LOG_SHOW) {
                 LOGE("找到音频");
             }
             SXAudioChannel *sxAudioChannel = new SXAudioChannel(i,
                                                                 pFormatCtx->streams[i]->time_base);
             audiochannels.push_front(sxAudioChannel);
-        } else if (pFormatCtx->streams[i]->codecpar->codec_type = AVMEDIA_TYPE_VIDEO) {
+        } else if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             if (!isOnlyMusic) {
                 if (LOG_SHOW) {
                     LOGE("找到视频");
@@ -456,7 +457,7 @@ int SXFFmpeg::decodeFFmpeg() {
                                          sxVideo->avCodecContext->extradata_size,
                                          sxVideo->avCodecContext->extradata_size,
                                          sxVideo->avCodecContext->extradata,
-                                         sxVideo->avCodecContext->extradata)
+                                         sxVideo->avCodecContext->extradata);
         }
         sxVideo->duration = pFormatCtx->duration / 1000000;
     }
@@ -481,4 +482,48 @@ SXFFmpeg::SXFFmpeg(SXJavaCall *javaCall, const char *url, bool onlymusic) {
     sxJavaCall = javaCall;
     urlpath = url;
     sxPlayStatus = new SXPlayStatus();
+}
+
+SXFFmpeg::~SXFFmpeg() {
+    pthread_mutex_destroy(&init_mutex);
+    if(LOG_SHOW)
+    {
+        LOGE("~WlFFmpeg() 释放了");
+    }
+}
+
+int SXFFmpeg::seek(int64_t sec) {
+    if(sec >= duration)
+    {
+        return -1;
+    }
+    if(sxPlayStatus->load)
+    {
+        return -1;
+    }
+    if(pFormatCtx != NULL)
+    {
+        sxPlayStatus->seek = true;
+        pthread_mutex_lock(&seek_mutex);
+        int64_t rel = sec * AV_TIME_BASE;
+        int ret = avformat_seek_file(pFormatCtx, -1, INT64_MIN, rel, INT64_MAX, 0);
+        if(sxAudio != NULL)
+        {
+            sxAudio->queue->clearAVPacket();
+//            av_seek_frame(pFormatCtx, wlAudio->streamIndex, sec * wlAudio->time_base.den, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+            sxAudio->setClock(0);
+        }
+        if(sxVideo != NULL)
+        {
+            sxVideo->queue->clearAVFrame();
+            sxVideo->queue->clearAVPacket();
+//            av_seek_frame(pFormatCtx, wlVideo->streamIndex, sec * wlVideo->time_base.den, AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD);
+            sxVideo->setClock(0);
+        }
+        sxAudio->clock = 0;
+        sxAudio->now_time = 0;
+        pthread_mutex_unlock(&seek_mutex);
+        sxPlayStatus->seek = false;
+    }
+    return 0;
 }

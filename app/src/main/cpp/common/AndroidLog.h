@@ -10,7 +10,7 @@
 #include <android/log.h>
 #define LOG_SHOW true
 
-#define LOGD(FORMAT, ...) __android_log_print(ANDROID_LOG_DEBUG, "sxplayer",FORMAT, ##__VA_ARGS__);
-#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR, "sxplayer",FORMAT, ##__VA_ARGS__);
+#define LOGD(FORMAT, ...) __android_log_print(ANDROID_LOG_DEBUG, "SXPlayer",FORMAT, ##__VA_ARGS__);
+#define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR, "SXPlayer",FORMAT, ##__VA_ARGS__);
 
 #endif //SXPLAYER_ANDROIDLOG_H

@@ -10,7 +10,6 @@
 #include "SXJavaCall.h"
 #include "../common/AndroidLog.h"
 #include "SXAudio.h"
-#include "../../../../../../../../../../Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/sys/types.h"
 
 extern "C"
 {
@@ -37,8 +36,8 @@ public:
     int playcount = -1;
 
 public:
-    SXVideo(SXJavaCall *sxJavaCall1, SXAudio *audio, SXPlayStatus *playStatus);
-    ~SXVideo()
+    SXVideo(SXJavaCall *sxJavaCall, SXAudio *audio, SXPlayStatus *playStatus);
+    ~SXVideo();
 
     void playVideo(int codecType);
     void decodVideo();
