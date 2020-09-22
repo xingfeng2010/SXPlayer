@@ -269,6 +269,14 @@ int SXFFmpeg::start() {
                 }
                 sxAudio->queue->putAVPacket(packet);
             } else if (sxVideo != NULL && packet->stream_index == sxVideo->streamIndex) {
+                if (mimType == NULL) {
+                    LOGE("mimType is NULL");
+                }
+
+                if (isavi) {
+                    LOGE("isavi is true");
+                }
+
                 if (mimType != NULL && !isavi) {
                     uint8_t * data;
                     av_bitstream_filter_filter(mimType,
@@ -281,9 +289,8 @@ int SXFFmpeg::start() {
                     if (tdata != NULL) {
                         av_free(tdata);
                     }
-
-                    sxVideo->queue->putAVPacket(packet);
                 }
+                sxVideo->queue->putAVPacket(packet);
             } else {
                 av_packet_free(&packet);
                 av_free(packet);
