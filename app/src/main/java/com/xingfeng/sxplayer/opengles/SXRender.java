@@ -130,6 +130,7 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glClearColor(0f, 0f, 0f, 1f);
 
+        Log.d(LogTag.TAG, "codecType :" + codecType);
         switch (codecType) {
             case 1:
                 renderMediacodec();
@@ -223,7 +224,7 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
     }
 
     public void setCodecType(int type) {
-        this.codecType = codecType;
+        this.codecType = type;
     }
 
     public void setFrameData(int w, int h, byte[] by, byte[] bu, byte[] bv) {

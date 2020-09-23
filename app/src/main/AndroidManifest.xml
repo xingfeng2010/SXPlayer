@@ -21,7 +21,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.VideoLiveActivity"/>
+        <activity android:name=".activity.VideoLiveActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
