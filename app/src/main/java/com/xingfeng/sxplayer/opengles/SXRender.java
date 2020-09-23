@@ -107,7 +107,10 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
     @Override
     public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-
+        Log.d(LogTag.TAG,"onFrameAvailable");
+        if(mRenderRefreshListener != null) {
+            mRenderRefreshListener.onRefresh();
+        }
     }
 
     @Override
@@ -161,7 +164,7 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
 
             textureBuffer.position(0);
             GLES20.glEnableVertexAttribArray(aTextureCoordHandle_yuv);
-            GLES20.glVertexAttribPointer(aTextureCoordHandle_yuv, 2, GLES20.GL_FLOAT, false, 8, vertexBuffer);
+            GLES20.glVertexAttribPointer(aTextureCoordHandle_yuv, 2, GLES20.GL_FLOAT, false, 8, textureBuffer);
 
             //使 GL_TEXTURE0 单元 活跃 opengl最多支持16个纹理
             //纹理单元是显卡中所有的可用于在shader中进行纹理采样的显存 数量与显卡类型相关，至少16个
@@ -184,7 +187,7 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureid_yuv[2]);
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D,0,GLES20.GL_LUMINANCE, w/2, h /2, 0,
                     GLES20.GL_LUMINANCE,GLES20.GL_UNSIGNED_BYTE, v);
-            GLES20.glUniform1f(sampler_v,1);
+            GLES20.glUniform1f(sampler_v,2);
 
             y.clear();
             u.clear();
