@@ -199,12 +199,12 @@ void SXVideo::decodVideo() {
             if (LOG_SHOW) {
                 LOGE("delay time %f diff is %f", delayTime, diff);
             }
-            if (diff >= 0.8) {
-                av_frame_free(&frame);
-                av_free(frame);
-                frame = NULL;
-                continue;
-            }
+//            if (diff >= 0.8) {
+//                av_frame_free(&frame);
+//                av_free(frame);
+//                frame = NULL;
+//                continue;
+//            }
 
             playcount++;
             if (playcount > 500) {

@@ -160,11 +160,11 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
         if (w > 0 && h > 0 && y != null && u != null && v != null) {
             GLES20.glUseProgram(programId_yuv);
             GLES20.glEnableVertexAttribArray(aPositionHandle_yuv);
-            GLES20.glVertexAttribPointer(aPositionHandle_yuv, 3, GLES20.GL_FLOAT, false, 12, vertexBuffer);
-
+            GLES20.glVertexAttribPointer(aPositionHandle_yuv, 3, GLES20.GL_FLOAT, false,
+                    12, vertexBuffer);
             textureBuffer.position(0);
             GLES20.glEnableVertexAttribArray(aTextureCoordHandle_yuv);
-            GLES20.glVertexAttribPointer(aTextureCoordHandle_yuv, 2, GLES20.GL_FLOAT, false, 8, textureBuffer);
+            GLES20.glVertexAttribPointer(aTextureCoordHandle_yuv,2,GLES20.GL_FLOAT,false,8, textureBuffer);
 
             //使 GL_TEXTURE0 单元 活跃 opengl最多支持16个纹理
             //纹理单元是显卡中所有的可用于在shader中进行纹理采样的显存 数量与显卡类型相关，至少16个
@@ -172,27 +172,25 @@ public class SXRender implements GLSurfaceView.Renderer, SurfaceTexture.OnFrameA
             //绑定纹理空间 下面的操作就会作用在这个空间中
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureid_yuv[0]);
             //创建一个2d纹理 使用亮度颜色模型并且纹理数据也是亮度颜色模型
-            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, w, h, 0,
-                    GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, y);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, w, h, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE, y);
             //绑定采样器与纹理单元
             GLES20.glUniform1i(sampler_y, 0);
 
+
             GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureid_yuv[1]);
-            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D,0,GLES20.GL_LUMINANCE, w/2, h /2, 0,
-                    GLES20.GL_LUMINANCE,GLES20.GL_UNSIGNED_BYTE, u);
-            GLES20.glUniform1f(sampler_u,1);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureid_yuv[1]);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, w / 2, h / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE,
+                    u);
+            GLES20.glUniform1i(sampler_u, 1);
 
             GLES20.glActiveTexture(GLES20.GL_TEXTURE2);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,textureid_yuv[2]);
-            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D,0,GLES20.GL_LUMINANCE, w/2, h /2, 0,
-                    GLES20.GL_LUMINANCE,GLES20.GL_UNSIGNED_BYTE, v);
-            GLES20.glUniform1f(sampler_v,2);
-
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureid_yuv[2]);
+            GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_LUMINANCE, w / 2, h / 2, 0, GLES20.GL_LUMINANCE, GLES20.GL_UNSIGNED_BYTE,
+                    v);
+            GLES20.glUniform1i(sampler_v, 2);
             y.clear();
             u.clear();
             v.clear();
-
             y = null;
             u = null;
             v = null;
