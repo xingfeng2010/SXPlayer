@@ -14,6 +14,9 @@ public class MainActivity extends AppCompatActivity {
 
     // Used to load the 'native-lib' library on application startup.
 
+    String liveUrl = "rtmp://58.200.131.2:1935/livetv/hunantv";
+    String liveUrl2 = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,10 +29,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void startPlay(View view) {
+    public void startPlayFFMpeg(View view) {
         Intent intent = new Intent(this, VideoLiveActivity.class);
-        //String pathurl = "http://pl28.live.panda.tv/live_panda/dd9f182bcec99d04099113e618cfc5b3_mid.flv?sign=1153e03b4fff24bf5eb2c311c871a423&time=&ts=5a461efe&rid=-465228";
-        intent.putExtra("url", "rtmp://58.200.131.2:1935/livetv/hunantv");
+        intent.putExtra("url", liveUrl2);
+        intent.putExtra("codecType", "ffmpeg");
+        startActivity(intent);
+    }
+
+    public void startPlayMediaCodec(View view) {
+        Intent intent = new Intent(this, VideoLiveActivity.class);
+        intent.putExtra("url", liveUrl2);
+        intent.putExtra("codecType", "mediacodec");
         startActivity(intent);
     }
 }

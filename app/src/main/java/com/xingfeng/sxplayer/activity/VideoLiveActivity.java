@@ -37,6 +37,7 @@ public class VideoLiveActivity extends BaseActivity {
     private boolean ispause = false;
     private int position;
     private boolean isSeek = false;
+    private String codecType = "mediacodec";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class VideoLiveActivity extends BaseActivity {
         sxPlayer.setOnlyMusic(false);
 
         pathurl = getIntent().getExtras().getString("url");
+        codecType = getIntent().getExtras().getString("codecType");
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -77,7 +79,11 @@ public class VideoLiveActivity extends BaseActivity {
             }
         });
         sxPlayer.setDataSource(pathurl);
-        sxPlayer.setOnlySoft(true);
+        if (codecType.equalsIgnoreCase("ffmpeg")) {
+            sxPlayer.setOnlySoft(true);
+        } else {
+            sxPlayer.setOnlySoft(false);
+        }
         sxPlayer.setSxSurfaceView(surfaceview);
         sxPlayer.setOnErrorListener((code, msg) -> {
             Log.d(LogTag.TAG,"code:" + code + ",msg:" + msg);

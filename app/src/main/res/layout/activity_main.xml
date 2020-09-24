@@ -18,13 +18,25 @@
 
 
     <Button
+        android:id="@+id/ffmpeg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="进入播放"
+        android:text="进入播放(FFMPEG)"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/sample_text"
-        android:onClick="startPlay"
+        android:onClick="startPlayFFMpeg"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="进入播放(MEDIA_CODEC)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ffmpeg"
+        android:onClick="startPlayMediaCodec"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
