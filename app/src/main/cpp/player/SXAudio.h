@@ -71,7 +71,7 @@ public:
     SLAndroidSimpleBufferQueueItf pcmBufferQueue = NULL;
 
 public:
-    SXAudio(SXPlayStatus *playStatus, SXJavaCall *javaCall);
+    SXAudio(SXPlayStatus *playStatus,int samplate, SXJavaCall *javaCall);
     ~SXAudio();
 
     void setVideo(bool video);

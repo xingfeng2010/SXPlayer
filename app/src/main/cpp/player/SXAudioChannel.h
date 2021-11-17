@@ -17,6 +17,7 @@ public:
     int channelId = -1;
     AVRational time_base;
     int fps;
+    int sampelRate;
 
 public:
     SXAudioChannel(int id, AVRational base);

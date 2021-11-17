@@ -5,14 +5,13 @@
 #include <libavutil/mem.h>
 #include "SXJavaCall.h"
 #include "../common/AndroidLog.h"
-#include "../../../../../../../../../../Library/Android/sdk/ndk/21.1.6352462/toolchains/llvm/prebuilt/darwin-x86_64/sysroot/usr/include/jni.h"
 
 SXJavaCall::SXJavaCall(_JavaVM *vm, JNIEnv *env, jobject *obj) {
     javaVm = vm;
     jniEnv = env;
     jobj = *obj;
-
     jobj = env->NewGlobalRef(jobj);
+
     jclass jlz = jniEnv->GetObjectClass(jobj);
     if (!jlz) {
         LOGE("find jclass failed");

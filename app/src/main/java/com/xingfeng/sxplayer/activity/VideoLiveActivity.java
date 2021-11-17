@@ -8,6 +8,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,6 +40,8 @@ public class VideoLiveActivity extends BaseActivity {
     private boolean isSeek = false;
     private String codecType = "mediacodec";
 
+    private ImageButton imageButton;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +57,7 @@ public class VideoLiveActivity extends BaseActivity {
         lyAction = findViewById(R.id.ly_action);
         ivCutImg = findViewById(R.id.iv_cutimg);
         ivShowImg = findViewById(R.id.iv_show_img);
+        imageButton = findViewById(R.id.pb_back);
 
         sxPlayer = new SXPlayer();
         sxPlayer.setOnlyMusic(false);
@@ -96,6 +100,9 @@ public class VideoLiveActivity extends BaseActivity {
         sxPlayer.setOnPreparedListener(() -> {
             Log.d(LogTag.TAG,"starting......");
             sxPlayer.start();
+            int audioChannels = sxPlayer.getAudioChannels();
+            int videoChannels = sxPlayer.getVideoChannels();
+            Log.d(LogTag.TAG,"audioChannels:" + audioChannels + "  videoChannels:" + videoChannels);
         });
 
         sxPlayer.setOnLoadListener(load -> {
@@ -129,6 +136,16 @@ public class VideoLiveActivity extends BaseActivity {
         sxPlayer.prepared();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if(sxPlayer != null) {
+            sxPlayer.stop(true);
+            sxPlayer = null;
+        }
+    }
+
 
     @SuppressLint("HandlerLeak")
     Handler handler = new Handler()
@@ -142,6 +159,7 @@ public class VideoLiveActivity extends BaseActivity {
                 if(load)
                 {
                     progressBar.setVisibility(View.VISIBLE);
+                    imageButton.setVisibility(View.INVISIBLE);
                 }
                 else
                 {
@@ -150,6 +168,7 @@ public class VideoLiveActivity extends BaseActivity {
                         lyAction.setVisibility(View.VISIBLE);
                         ivCutImg.setVisibility(View.VISIBLE);
                     }
+                    imageButton.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -193,15 +212,6 @@ public class VideoLiveActivity extends BaseActivity {
         }
     };
 
-    @Override
-    public void onBackPressed() {
-        if(sxPlayer != null)
-        {
-            sxPlayer.stop(true);
-        }
-        this.finish();
-    }
-
     public void pause(View view) {
         if(sxPlayer != null)
         {
@@ -225,5 +235,9 @@ public class VideoLiveActivity extends BaseActivity {
         {
             sxPlayer.cutVideoImg();
         }
+    }
+
+    public void closeActivity(View view) {
+        VideoLiveActivity.this.finish();
     }
 }

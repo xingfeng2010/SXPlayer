@@ -11,18 +11,16 @@ void *decodData(void *data) {
 }
 
 void SXFFmpeg::setAudioChannel(int index) {
-    if(sxAudio != NULL)
+    int channelsize = audiochannels.size();
+    if(index < channelsize)
     {
-        int channelsize = audiochannels.size();
-        if(index < channelsize)
+        for(int i = 0; i < channelsize; i++)
         {
-            for(int i = 0; i < channelsize; i++)
+            if(i == index)
             {
-                if(i == index)
-                {
-                    sxAudio->time_base = audiochannels.at(i)->time_base;
-                    sxAudio->streamIndex = audiochannels.at(i)->channelId;
-                }
+                sxAudio = new SXAudio(sxPlayStatus, audiochannels.at(i)->sampelRate, sxJavaCall);
+                sxAudio->time_base = audiochannels.at(i)->time_base;
+                sxAudio->streamIndex = audiochannels.at(i)->channelId;
             }
         }
     }
@@ -42,6 +40,10 @@ void SXFFmpeg::setVideoChannel(int id) {
         }
 
     }
+}
+
+int SXFFmpeg::getVideoChannels() {
+    return vidoechannels.size();
 }
 
 int SXFFmpeg::getAudioChannels() {
@@ -386,6 +388,7 @@ int SXFFmpeg::decodeFFmpeg() {
             }
             SXAudioChannel *sxAudioChannel = new SXAudioChannel(i,
                                                                 pFormatCtx->streams[i]->time_base);
+            sxAudioChannel->sampelRate = pFormatCtx->streams[i]->codecpar->sample_rate;
             audiochannels.push_front(sxAudioChannel);
         } else if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
             if (!isOnlyMusic) {
@@ -408,7 +411,6 @@ int SXFFmpeg::decodeFFmpeg() {
     }
 
     if (audiochannels.size() > 0) {
-        sxAudio = new SXAudio(sxPlayStatus, sxJavaCall);
         setAudioChannel(0);
         if (sxAudio->streamIndex >= 0 && sxAudio->streamIndex < pFormatCtx->nb_streams) {
             if (getAVCodecContext(pFormatCtx->streams[sxAudio->streamIndex]->codecpar, sxAudio) !=

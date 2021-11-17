@@ -4,10 +4,10 @@
 
 #include "SXAudio.h"
 
-SXAudio::SXAudio(SXPlayStatus *playStatus, SXJavaCall *javaCall) {
+SXAudio::SXAudio(SXPlayStatus *playStatus, int samplate, SXJavaCall *javaCall) {
+    sample_rate = samplate;
     streamIndex = -1;
-    out_buffer = (uint8_t * )
-    malloc(sample_rate * 2 * 2 * 2 / 3);
+    out_buffer = (uint8_t * ) malloc(sample_rate * 2 * 2 * 2 / 3);
     queue = new SXQueue(playStatus);
     sxPlayStatus = playStatus;
     sxJavaCall = javaCall;
@@ -184,8 +184,7 @@ void pcmBufferCallBack(SLAndroidSimpleBufferQueueItf bf, void *context) {
         if (sxAudio->buffer && sxAudio->pcmsize > 0) {
             sxAudio->clock += sxAudio->pcmsize / ((double) (sxAudio->sample_rate * 2 * 2));
             sxAudio->sxJavaCall->onVideoInfo(SX_THREAD_CHILD, sxAudio->clock, sxAudio->duration);
-            (*sxAudio->pcmBufferQueue)->Enqueue(sxAudio->pcmBufferQueue, sxAudio->buffer,
-                                                sxAudio->pcmsize);
+            (*sxAudio->pcmBufferQueue)->Enqueue(sxAudio->pcmBufferQueue, sxAudio->buffer, sxAudio->pcmsize);
         }
     }
 }

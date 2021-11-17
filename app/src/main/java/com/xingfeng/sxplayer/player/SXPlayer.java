@@ -192,6 +192,12 @@ public class SXPlayer {
     private native int sxGetAudioChannels();
 
     /**
+     * 获取视频通道
+     * @return
+     */
+    private native int sxGetVideoChannels();
+
+    /**
      * 获取视频宽度
      */
     private native int sxGetVideoWidth();
@@ -205,6 +211,11 @@ public class SXPlayer {
     public int getDuration()
     {
         return sxGetDuration();
+    }
+
+    public int getVideoChannels()
+    {
+        return sxGetVideoChannels();
     }
 
     public int getAudioChannels()

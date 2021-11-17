@@ -15,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
 
     String liveUrl = "rtmp://58.200.131.2:1935/livetv/hunantv";
-    String liveUrl2 = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
+//    String liveUrl2 = "http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8";
+    String liveUrl2 = "http://mn.maliuedu.com/music/input.mp4";
 
 
     @Override

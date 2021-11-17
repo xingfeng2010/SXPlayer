@@ -21,6 +21,7 @@ JNIEXPORT void JNICALL
 Java_com_xingfeng_sxplayer_player_SXPlayer_sxPrepared(JNIEnv *env, jobject thiz,
                                                       jstring data_source, jboolean is_only_music) {
     const char *url = env->GetStringUTFChars(data_source, 0);
+
     if (sxJavaCall == NULL) {
         sxJavaCall = new SXJavaCall(javaVM, env, &thiz);
     }
@@ -131,6 +132,17 @@ Java_com_xingfeng_sxplayer_player_SXPlayer_sxGetAudioChannels(JNIEnv *env, jobje
     }
     return 0;
 }
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_xingfeng_sxplayer_player_SXPlayer_sxGetVideoChannels(JNIEnv *env, jobject thiz) {
+    if(sxFFmpeg != NULL)
+    {
+        return sxFFmpeg->getVideoChannels();
+    }
+    return 0;
+}
+
 
 extern "C"
 JNIEXPORT jint JNICALL

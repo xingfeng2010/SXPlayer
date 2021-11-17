@@ -57,6 +57,7 @@ public:
     void setAudioChannel(int id);
     void setVideoChannel(int id);
     int getAudioChannels();
+    int getVideoChannels();
     int getVideoWidth();
     int getVideoHeight();
 };
