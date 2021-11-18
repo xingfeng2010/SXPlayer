@@ -2,6 +2,7 @@ package com.xingfeng.sxplayer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         // Example of a call to a native method
         TextView tv = findViewById(R.id.sample_text);
         tv.setText(SXPlayer.stringFromJNI());
-
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
     }
 
     public void startPlayFFMpeg(View view) {

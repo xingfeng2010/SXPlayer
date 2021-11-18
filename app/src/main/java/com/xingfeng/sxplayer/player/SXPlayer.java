@@ -16,6 +16,7 @@ import com.xingfeng.sxplayer.listener.SXOnPreparedListener;
 import com.xingfeng.sxplayer.listener.SXOnStopListener;
 import com.xingfeng.sxplayer.listener.SurfaceViewCreateListener;
 import com.xingfeng.sxplayer.opengles.SXSurfaceView;
+import com.xingfeng.sxplayer.util.CommonUtil;
 import com.xingfeng.sxplayer.util.LogTag;
 
 import java.io.IOException;
@@ -371,6 +372,7 @@ public class SXPlayer {
     }
 
     public void mediacodecDecode(byte[] bytes, int size, int pts) {
+        Log.i("LISHIXING","mediacodecDecode size " + size);
         if (bytes != null && mediaCodec != null && bufferInfo != null) {
             try {
                 int inputBufferIndex = mediaCodec.dequeueInputBuffer(10);
