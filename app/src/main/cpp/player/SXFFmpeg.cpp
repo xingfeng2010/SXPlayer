@@ -127,6 +127,13 @@ void SXFFmpeg::release() {
     if (sxJavaCall != NULL) {
         sxJavaCall = NULL;
     }
+
+
+    if (nativeWindow) {
+        ANativeWindow_release(nativeWindow);
+        nativeWindow = 0;
+    }
+
     pthread_mutex_unlock(&init_mutex);
 }
 
@@ -461,12 +468,18 @@ int SXFFmpeg::decodeFFmpeg() {
         }
 
         if (mimeType != -1) {
-            sxJavaCall->onInitMediacodec(SX_THREAD_CHILD, mimeType, sxVideo->avCodecContext->width,
-                                         sxVideo->avCodecContext->height,
-                                         sxVideo->avCodecContext->extradata_size,
-                                         sxVideo->avCodecContext->extradata_size,
-                                         sxVideo->avCodecContext->extradata,
-                                         sxVideo->avCodecContext->extradata);
+            sxVideo->initMediaCodec(nativeWindow, mimeType, sxVideo->avCodecContext->width,
+                                   sxVideo->avCodecContext->height,
+                                   sxVideo->avCodecContext->extradata_size,
+                                   sxVideo->avCodecContext->extradata_size,
+                                   sxVideo->avCodecContext->extradata,
+                                   sxVideo->avCodecContext->extradata);
+//            sxJavaCall->onInitMediacodec(SX_THREAD_CHILD, mimeType, sxVideo->avCodecContext->width,
+//                                         sxVideo->avCodecContext->height,
+//                                         sxVideo->avCodecContext->extradata_size,
+//                                         sxVideo->avCodecContext->extradata_size,
+//                                         sxVideo->avCodecContext->extradata,
+//                                         sxVideo->avCodecContext->extradata);
         }
         sxVideo->duration = pFormatCtx->duration / 1000000;
     }
@@ -483,7 +496,7 @@ int SXFFmpeg::decodeFFmpeg() {
     return 0;
 }
 
-SXFFmpeg::SXFFmpeg(SXJavaCall *javaCall, const char *url, bool onlymusic) {
+SXFFmpeg::SXFFmpeg(SXJavaCall *javaCall, ANativeWindow *window, const char *url, bool onlymusic) {
     pthread_mutex_init(&init_mutex, NULL);
     pthread_mutex_init(&seek_mutex, NULL);
     exitByUser = false;
@@ -491,6 +504,7 @@ SXFFmpeg::SXFFmpeg(SXJavaCall *javaCall, const char *url, bool onlymusic) {
     sxJavaCall = javaCall;
     urlpath = url;
     sxPlayStatus = new SXPlayStatus();
+    nativeWindow = window;
 }
 
 SXFFmpeg::~SXFFmpeg() {

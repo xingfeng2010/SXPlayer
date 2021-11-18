@@ -127,7 +127,7 @@ public class SXPlayer {
                 }
 
                 if (parpared && !TextUtils.isDigitsOnly(dataSource)) {
-                    sxPrepared(dataSource, isOnlyMusic);
+                    sxPrepared(dataSource, surface, isOnlyMusic);
                 }
             }
 
@@ -145,7 +145,7 @@ public class SXPlayer {
      * @param dataSource
      * @param isOnlyMusic
      */
-    private native void sxPrepared(String dataSource, boolean isOnlyMusic);
+    private native void sxPrepared(String dataSource, Surface surface, boolean isOnlyMusic);
 
     /**
      * 开始
@@ -259,13 +259,13 @@ public class SXPlayer {
         parpared = true;
         if(isOnlyMusic)
         {
-            sxPrepared(dataSource, isOnlyMusic);
+            //sxPrepared(dataSource, isOnlyMusic);
         }
         else
         {
             if(surface != null)
             {
-                sxPrepared(dataSource, isOnlyMusic);
+                sxPrepared(dataSource, surface, isOnlyMusic);
             }
         }
     }

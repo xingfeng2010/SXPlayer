@@ -117,4 +117,5 @@ target_link_libraries( # Specifies the target library.
         android
         log
         mediandk
+        jnigraphics
         )

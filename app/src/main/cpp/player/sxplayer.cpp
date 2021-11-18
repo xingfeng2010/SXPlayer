@@ -3,7 +3,7 @@
 #include "../common/AndroidLog.h"
 #include "SXJavaCall.h"
 #include "SXFFmpeg.h"
-#include "media/NdkMediaCodec.h"
+#include <android/native_window_jni.h>
 
 _JavaVM *javaVM = NULL;
 SXJavaCall *sxJavaCall = NULL;
@@ -20,15 +20,16 @@ Java_com_xingfeng_sxplayer_player_SXPlayer_stringFromJNI(
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_xingfeng_sxplayer_player_SXPlayer_sxPrepared(JNIEnv *env, jobject thiz,
-                                                      jstring data_source, jboolean is_only_music) {
+                                                      jstring data_source, jobject jsurface, jboolean is_only_music) {
     const char *url = env->GetStringUTFChars(data_source, 0);
+    ANativeWindow* window = ANativeWindow_fromSurface(env, jsurface);
 
     if (sxJavaCall == NULL) {
         sxJavaCall = new SXJavaCall(javaVM, env, &thiz);
     }
 
     if (sxFFmpeg == NULL) {
-        sxFFmpeg = new SXFFmpeg(sxJavaCall, url, is_only_music);
+        sxFFmpeg = new SXFFmpeg(sxJavaCall, window, url, is_only_music);
         sxJavaCall->onLoad(SX_THREAD_MAIN, true);
         sxFFmpeg->preparedFFmpeg();
     }
@@ -163,4 +164,13 @@ Java_com_xingfeng_sxplayer_player_SXPlayer_sxGetVideoHeight(JNIEnv *env, jobject
         return sxFFmpeg->getVideoHeight();
     }
     return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_xingfeng_sxplayer_player_SXPlayer_nativeSetSurface(JNIEnv *env, jobject thiz,
+                                                            jobject surface) {
+    if (sxFFmpeg != NULL) {
+
+    }
 }

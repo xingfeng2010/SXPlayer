@@ -13,6 +13,7 @@
 #include "SXVideo.h"
 #include "SXPlayStatus.h"
 #include "SXAudioChannel.h"
+#include <android/native_window_jni.h>
 
 extern "C"
 {
@@ -41,8 +42,10 @@ public:
     pthread_mutex_t init_mutex;
     pthread_mutex_t seek_mutex;
 
+    ANativeWindow *nativeWindow;
+
 public:
-    SXFFmpeg(SXJavaCall *javaCall, const char *urlpath, bool onlymusic);
+    SXFFmpeg(SXJavaCall *javaCall, ANativeWindow *window, const char *urlpath, bool onlymusic);
     ~SXFFmpeg();
     int preparedFFmpeg();
     int decodeFFmpeg();

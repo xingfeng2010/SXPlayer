@@ -10,6 +10,8 @@
 #include "SXJavaCall.h"
 #include "../common/AndroidLog.h"
 #include "SXAudio.h"
+#include "media/NdkMediaCodec.h"
+#include <string.h>
 
 extern "C"
 {
@@ -34,6 +36,9 @@ public:
     double framePts = 0;
     bool frameratebig = false;
     int playcount = -1;
+    AMediaCodec *pMediaCodec = NULL;
+    AMediaFormat *format = NULL;
+    AMediaCodecBufferInfo *bufferInfo = NULL;
 
 public:
     SXVideo(SXJavaCall *sxJavaCall, SXAudio *audio, SXPlayStatus *playStatus);
@@ -46,6 +51,9 @@ public:
 
     double getDelayTime(double diff);
     void setClock(int secds);
+    void initMediaCodec(ANativeWindow *window, int mimetype, int width, int height, int csd_0_size,
+                        int csd_1_size, uint8_t *csd_0, uint8_t *csd_1);
+    void nativeDecMediacodec(int size, uint8_t *packet_data, int pts);
 };
 
 #endif //SXPLAYER_SXVIDEO_H
