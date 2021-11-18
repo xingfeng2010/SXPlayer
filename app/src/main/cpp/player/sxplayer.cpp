@@ -3,6 +3,7 @@
 #include "../common/AndroidLog.h"
 #include "SXJavaCall.h"
 #include "SXFFmpeg.h"
+#include "media/NdkMediaCodec.h"
 
 _JavaVM *javaVM = NULL;
 SXJavaCall *sxJavaCall = NULL;

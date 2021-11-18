@@ -171,7 +171,7 @@ void SXVideo::decodVideo() {
 
             av_usleep(delayTime * 1000);
             sxJavaCall->onVideoInfo(SX_THREAD_CHILD, clock, duration);
-            sxJavaCall->onDecMediacodec(SX_THREAD_CHILD, packet->size, packet->data, 0);
+            sxJavaCall->onDecMediacodec(SX_THREAD_CHILD, packet->size, packet->data, time);
             av_free(packet->data);
             av_free(packet->buf);
             av_free(packet->side_data);
