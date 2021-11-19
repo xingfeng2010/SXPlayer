@@ -120,6 +120,10 @@ SXVideo::initMediaCodec(ANativeWindow *window, int mimetype, int width, int heig
     LOGD("[%s][%s][%d]fromat:%s\n", __FUNCTION__, __DATE__, __LINE__,
          AMediaFormat_toString(format));
 
+    if (window == NULL) {
+        LOGD("window is null !!!\n");
+    }
+
     media_status_t status = AMediaCodec_configure(pMediaCodec, format, window, NULL, 0);
     if (status != 0) {
         LOGD("erro config %d\n", status);
@@ -138,11 +142,12 @@ SXVideo::initMediaCodec(ANativeWindow *window, int mimetype, int width, int heig
 void SXVideo::nativeDecMediacodec(int size, uint8_t *packet_data, int pts) {
     LOGD("input size %d:", size);
     if (packet_data != NULL && pMediaCodec != NULL) {
-        ssize_t index = AMediaCodec_dequeueInputBuffer(pMediaCodec, 10);
-        size_t out_size;
+        ssize_t index = AMediaCodec_dequeueInputBuffer(pMediaCodec, 2000);
+        LOGD("input buffer %zd:", index);
+        size_t bufsize;
         if (index >= 0) {
-            uint8_t *buffer = AMediaCodec_getInputBuffer(pMediaCodec, index, &out_size);
-            LOGD("output size %d:", out_size);
+            uint8_t *buffer = AMediaCodec_getInputBuffer(pMediaCodec, index, &bufsize);
+            LOGD("bufsize size %d:", bufsize);
             memcpy(buffer, packet_data, size);
             AMediaCodec_queueInputBuffer(pMediaCodec, index, 0, size, pts, 0);
         }

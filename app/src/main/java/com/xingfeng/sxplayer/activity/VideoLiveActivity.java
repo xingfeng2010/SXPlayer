@@ -85,8 +85,10 @@ public class VideoLiveActivity extends BaseActivity {
         sxPlayer.setDataSource(pathurl);
         if (codecType.equalsIgnoreCase("ffmpeg")) {
             sxPlayer.setOnlySoft(true);
+            surfaceview.setCodecType(0);
         } else {
             sxPlayer.setOnlySoft(false);
+            surfaceview.setCodecType(1);
         }
         sxPlayer.setSxSurfaceView(surfaceview);
         sxPlayer.setOnErrorListener((code, msg) -> {
@@ -119,6 +121,8 @@ public class VideoLiveActivity extends BaseActivity {
             message.obj = wlTimeBean;
             Log.d(LogTag.TAG,"nowTime is " +wlTimeBean.getCurrt_secds());
             handler.sendMessage(message);
+
+            //surfaceview.requestRender();
         });
 
         sxPlayer.setOnCompleteListener(() -> {
