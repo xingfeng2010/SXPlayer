@@ -113,7 +113,7 @@ public class SXPlayer {
 
     public void setOnlyMusic(boolean onlyMusic) { isOnlyMusic = onlyMusic; }
 
-    private void setSurface(Surface surface) {
+    public void setSurface(Surface surface) {
         this.surface = surface;
     }
 

@@ -430,7 +430,7 @@ int SXFFmpeg::decodeFFmpeg() {
     }
 
     if (vidoechannels.size() > 0) {
-        sxVideo = new SXVideo(sxJavaCall, sxAudio, sxPlayStatus);
+        sxVideo = new SXVideo(sxJavaCall, sxAudio, sxPlayStatus,nativeWindow);
         setVideoChannel(0);
         if (sxVideo->streamIndex >= 0 && sxVideo->streamIndex < pFormatCtx->nb_streams) {
             if (getAVCodecContext(pFormatCtx->streams[sxVideo->streamIndex]->codecpar, sxVideo) !=

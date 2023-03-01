@@ -24,6 +24,10 @@
         <activity android:name=".activity.VideoLiveActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="landscape"/>
+
+        <activity android:name=".activity.VideoLiveActivity2"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

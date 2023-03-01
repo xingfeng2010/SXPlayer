@@ -6,16 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/sample_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <Button
         android:id="@+id/ffmpeg"
@@ -25,11 +15,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/sample_text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="50dp"
         android:onClick="startPlayFFMpeg"
         />
 
     <Button
+        android:id="@+id/mediacodec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="进入播放(MEDIA_CODEC)"
@@ -38,5 +30,16 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/ffmpeg"
         android:onClick="startPlayMediaCodec"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="进入播放(ANativeWindow_Buffer)"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/mediacodec"
+        android:onClick="startANativeWindowBuffer"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,13 +5,17 @@
 #include <string>
 #include "SXVideo.h"
 
-SXVideo::SXVideo(SXJavaCall *javaCall, SXAudio *audio, SXPlayStatus *playStatus) {
+uint8_t *outbuffer;
+struct SwsContext *swsContext;
+
+SXVideo::SXVideo(SXJavaCall *javaCall, SXAudio *audio, SXPlayStatus *playStatus, ANativeWindow *window) {
     streamIndex = -1;
     clock = 0;
     sxJavaCall = javaCall;
     sxAudio = audio;
     queue = new SXQueue(playStatus);
     sxPlayStatus = playStatus;
+    nativeWindow = window;
 }
 
 SXVideo::~SXVideo() {
@@ -161,6 +165,26 @@ void SXVideo::nativeDecMediacodec(int size, uint8_t *packet_data, int pts) {
 }
 
 void SXVideo::decodVideo() {
+    rgbframe = av_frame_alloc();
+    int width = avCodecContext->width;
+    int height = avCodecContext->height;
+    int numBytes = av_image_get_buffer_size(AV_PIX_FMT_RGBA, width, height,1 );
+    LOGD("计算解码后的rgb %d\n",numBytes);
+    outbuffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
+    //缓冲区 设置给 rgbferame
+    av_image_fill_arrays(rgbframe->data, rgbframe->linesize, outbuffer, AV_PIX_FMT_RGBA, width,
+                         height, 1);
+    //   转换器
+    swsContext = sws_getContext(width, height, avCodecContext->pix_fmt,
+                                width, height, AV_PIX_FMT_RGBA, SWS_BICUBIC, NULL, NULL, NULL);
+
+    if (0 > ANativeWindow_setBuffersGeometry(nativeWindow, width, height,WINDOW_FORMAT_RGBA_8888)) {
+        LOGD("Couldn't set buffers geometry.\n");
+        ANativeWindow_release(nativeWindow);
+        return;
+    }
+    LOGD("ANativeWindow_setBuffersGeometry成功\n");
+
     while (!sxPlayStatus->exit) {
         isExit = false;
         if (sxPlayStatus->pause) {
@@ -253,6 +277,7 @@ void SXVideo::decodVideo() {
             continue;
         } else if (codecType == 0) {
             AVFrame *frame = av_frame_alloc();
+
             if (queue->getAVFrame(frame) != 0) {
                 av_frame_free(&frame);
                 av_free(frame);
@@ -305,9 +330,23 @@ void SXVideo::decodVideo() {
 
             av_usleep(delayTime * 1000);
             sxJavaCall->onVideoInfo(SX_THREAD_CHILD, clock, duration);
-            sxJavaCall->onGlRenderYuv(SX_THREAD_CHILD, frame->linesize[0], frame->height,
-                                      frame->data[0], frame->data[1], frame->data[2]);
+
+            /**
+             * 这里onGlRenderYuv和nativeWindowBuffer是两中完成不同的渲染方法：
+             *
+             * 1.onGlRenderYuv是将YUV数据转发给OpenGL,在OpenGL中完成YUV数据转RGB数据，最终呈现。
+             *   对应界面中从“进入播放(FFMPEG)”选项进入
+             *
+             * 2.nativeWindowBuffer是将数据直接写到Surface中进行显示，对应界面中从“进入播放(ANativeWindow_Buffer)”
+             *   选项进入
+             */
+//            sxJavaCall->onGlRenderYuv(SX_THREAD_CHILD, frame->linesize[0], frame->height,
+//                                      frame->data[0], frame->data[1], frame->data[2]);
+
+            nativeWindowBuffer(height, frame);
+
             av_frame_free(&frame);
+            av_free(frame);
             av_free(frame);
             frame = NULL;
         }
@@ -446,4 +485,25 @@ void SXVideo::playVideo(int type) {
     }
 
     pthread_create(&videoThread, NULL, decodeVideoT, this);
+}
+
+void SXVideo::nativeWindowBuffer(int height, AVFrame *srcFrame) {
+    //  未压缩的数据
+    sws_scale(swsContext, srcFrame->data, srcFrame->linesize, 0, avCodecContext->height,
+              rgbframe->data, rgbframe->linesize);
+
+    if ((ANativeWindow_lock(nativeWindow, &windowBuffer, NULL) < 0)) {
+        LOGD("ANativeWindow_setBuffersGeometry lock wind失败\n");
+        return;
+    }
+
+    LOGD("ANativeWindow_setBuffersGeometry 进行正常的数据拷贝\n");
+    //将图像绘制到界面上，注意这里pFrameRGBA一行的像素和windowBuffer一行的像素长度可能不一致
+    //需要转换好，否则可能花屏
+    uint8_t *dst = (uint8_t *) windowBuffer.bits;
+    for (int h = 0; h < height; h++) {
+        memcpy(dst + h * windowBuffer.stride * 4,outbuffer + h * rgbframe->linesize[0],rgbframe->linesize[0]);
+    }
+
+    ANativeWindow_unlockAndPost(nativeWindow);
 }

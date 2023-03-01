@@ -11,11 +11,14 @@
 #include "../common/AndroidLog.h"
 #include "SXAudio.h"
 #include "media/NdkMediaCodec.h"
+#include <android/native_window.h>
 #include <string.h>
 
 extern "C"
 {
 #include <../include/libavutil/time.h>
+#include "libavutil/imgutils.h"
+#include <../include/libswscale/swscale.h>
 };
 
 class SXVideo : public SXBasePlayer {
@@ -40,8 +43,14 @@ public:
     AMediaFormat *format = NULL;
     AMediaCodecBufferInfo *bufferInfo = NULL;
 
+    ANativeWindow *nativeWindow;
+    ANativeWindow_Buffer windowBuffer;
+    AVFrame *rgbframe;
+    struct SwsContext *swsContext;
+    uint8_t *outbuffer;
+
 public:
-    SXVideo(SXJavaCall *sxJavaCall, SXAudio *audio, SXPlayStatus *playStatus);
+    SXVideo(SXJavaCall *sxJavaCall, SXAudio *audio, SXPlayStatus *playStatus, ANativeWindow *nativeWindow);
     ~SXVideo();
 
     void playVideo(int codecType);
@@ -54,6 +63,8 @@ public:
     void initMediaCodec(ANativeWindow *window, int mimetype, int width, int height, int csd_0_size,
                         int csd_1_size, uint8_t *csd_0, uint8_t *csd_1);
     void nativeDecMediacodec(int size, uint8_t *packet_data, int pts);
+
+    void nativeWindowBuffer(int height, AVFrame *srcFrame);
 };
 
 #endif //SXPLAYER_SXVIDEO_H
